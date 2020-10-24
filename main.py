@@ -3,8 +3,13 @@ import spotify as sp
 import asyncio
 import datetime
 
-spotify = sp.SpotifyService()
+import logging
 
+log_level = logging.INFO
+
+logging.basicConfig(level=log_level)
+
+spotify = sp.SpotifyService()
 
 async def main():
 
@@ -16,11 +21,10 @@ async def main():
         if result is not None:
             if current is None or (current is not None and current.timestamp < result.timestamp and not result.is_same_track(current)):
                 current = result
-                print(current)
+                logging.info(current)
         else:
-            print("Spotify not playing.")
+            logging.info("Spotify not playing.")
 
         await asyncio.sleep(5)
-
 
 asyncio.run(main())
