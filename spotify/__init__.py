@@ -27,19 +27,26 @@ class SpotifyService:
         return SpotifyUser(**self.spotify.me())
 
     def currently_playing(self):
-        result = self.spotify.currently_playing(additional_types='episode')
 
-        if result is not None:
-            current = SpotifyCurrentPlaying(**result)
-            logger.debug(f"Current: {current}")
+        cp = self.spotify.currently_playing(additional_types='episode')
 
-            if current.is_playing:
-                return current
+        if cp is not None:
+            current_playing = SpotifyCurrentPlaying(**cp)
+            logger.debug(f"Current: {current_playing}")
+
+            if current_playing.is_playing:
+                playlist = None
+                if current_playing.context.type == 'playlist':
+                    pl = self.spotify.playlist(current_playing.context.type_id, fields=[
+                                               'name', 'description'])
+                    playlist = SpotifyPlaylist(**pl)
+
+                return SpotifyPlayingInfo(current_playing=current_playing, playlist=playlist)
             else:
                 logger.debug(
                     "Got playing info from Spotify, but it's not playing. Returning None.")
-                return None
+                return SpotifyPlayingInfo()
         else:
             logger.debug(
                 "Playing info was not provided from Spotify. Returning None.")
-            return None
+            return SpotifyPlayingInfo()

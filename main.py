@@ -18,10 +18,10 @@ async def main():
     while True:
         result = spotify.currently_playing()
 
-        if result is not None:
-            if current is None or (current is not None and current.timestamp < result.timestamp and not result.is_same_track(current)):
-                current = result
-                logging.info(current)
+        if result.current_playing is not None:
+            if current is None or (current is not None and current.timestamp < result.current_playing.timestamp and not result.is_same_track(current)):
+                current = result.current_playing
+                logging.info(result)
         else:
             logging.info("Spotify not playing.")
 

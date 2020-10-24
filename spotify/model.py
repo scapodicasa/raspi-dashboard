@@ -44,6 +44,15 @@ class SpotifyUser(SpotifyModel):
         self.id = id
 
 
+class SpotifyPlayingInfo(SpotifyModel):
+    current_playing = None
+    playlist = None
+
+    def __init__(self, current_playing=None, playlist=None):
+        self.current_playing = current_playing
+        self.playlist = playlist
+
+
 class SpotifyCurrentPlaying(SpotifyModel):
 
     timestamp = None
@@ -79,12 +88,17 @@ class SpotifyCurrentPlayingContext(SpotifyModel):
     type = None
     uri = None
 
+    type_id = None
+
     def __init__(self, type_=None, uri=None, **kwargs):
         self.type = type_
         self.uri = uri
 
+        self.type_id = uri.split(':')[-1]
+
 
 class SpotifyCurrentPlayingItem(SpotifyModel):
+    id = None
     duration = None
     type = None
     name = None
@@ -92,7 +106,8 @@ class SpotifyCurrentPlayingItem(SpotifyModel):
     show = None
     artists = None
 
-    def __init__(self, duration_ms=None, type_=None, name=None, album=None, show=None, artists=None, **kwargs):
+    def __init__(self, id=None, duration_ms=None, type_=None, name=None, album=None, show=None, artists=None, **kwargs):
+        self.id = id
         self.duration = duration_ms
         self.type = type_
         self.name = name
@@ -151,3 +166,13 @@ class SpotifyArtist(SpotifyModel):
 
     def __init__(self, name=None, **kwargs):
         self.name = name
+
+
+class SpotifyPlaylist(SpotifyModel):
+
+    name = None
+    description = None
+
+    def __init__(self, name=None, description=None, **kwargs):
+        self.name = name
+        self.description = description
