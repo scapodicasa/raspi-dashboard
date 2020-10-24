@@ -1,6 +1,7 @@
 from datetime import date, datetime
 import json
 
+
 class SpotifyModel:
     def todict(self, obj, classkey=None):
         if isinstance(obj, dict):
@@ -46,30 +47,64 @@ class SpotifyUser(SpotifyModel):
 class SpotifyCurrentPlaying(SpotifyModel):
 
     timestamp = None
+    context = None
+    progress = None
     item = None
     is_playing = None
 
-    def __init__(self, timestamp=None, item=None, is_playing=None, **kwargs):
+    progress_percentage = None
+
+    def __init__(self, timestamp=None, context=None, progress_ms=None, item=None, is_playing=None, **kwargs):
         self.timestamp = datetime.fromtimestamp(timestamp/1000)
-        self.item = SpotifyCurrentPlayingItem(type_=item['type'], **item)
+        self.progress = progress_ms
+
+        if context is not None:
+            self.context = SpotifyCurrentPlayingContext(
+                type_=context['type'], **context)
+
+        if item is not None:
+            self.item = SpotifyCurrentPlayingItem(type_=item['type'], **item)
+
+            self.progress_percentage = round(
+                self.progress / self.item.duration * 100, 2)
+
         self.is_playing = is_playing
 
     def is_same_track(self, other):
-        return (self.item.name == other.item.name and self.item.album.name == other.item.album.name)
+        return self.context.uri == other.context.uri
+
+
+class SpotifyCurrentPlayingContext(SpotifyModel):
+
+    type = None
+    uri = None
+
+    def __init__(self, type_=None, uri=None, **kwargs):
+        self.type = type_
+        self.uri = uri
 
 
 class SpotifyCurrentPlayingItem(SpotifyModel):
-
+    duration = None
     type = None
     name = None
     album = None
+    show = None
     artists = None
 
-    def __init__(self, type_=None, name=None, album=None, artists=None, **kwargs):
+    def __init__(self, duration_ms=None, type_=None, name=None, album=None, show=None, artists=None, **kwargs):
+        self.duration = duration_ms
         self.type = type_
         self.name = name
-        self.album = SpotifyCurrentPlayingItemAlbum(**album)
-        self.artists = [SpotifyArtist(**a) for a in artists]
+
+        if album is not None:
+            self.album = SpotifyCurrentPlayingItemAlbum(**album)
+
+        if show is not None:
+            self.show = SpotifyCurrentPlayingItemShow(**show)
+
+        if artists is not None:
+            self.artists = [SpotifyArtist(**a) for a in artists]
 
 
 class SpotifyCurrentPlayingItemAlbum(SpotifyModel):
@@ -81,6 +116,21 @@ class SpotifyCurrentPlayingItemAlbum(SpotifyModel):
         self.name = name
         self.images = [
             SpotifyCurrentPlayingItemAlbumImage(**i) for i in images]
+
+
+class SpotifyCurrentPlayingItemShow(SpotifyModel):
+
+    description = None
+    name = None
+    images = None
+    publisher = None
+
+    def __init__(self, description=None, name=None, images=None, publisher=None, **kwargs):
+        self.description = description
+        self.name = name
+        self.images = [
+            SpotifyCurrentPlayingItemAlbumImage(**i) for i in images]
+        self.publisher = publisher
 
 
 class SpotifyCurrentPlayingItemAlbumImage(SpotifyModel):

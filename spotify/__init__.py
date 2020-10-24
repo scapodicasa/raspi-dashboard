@@ -27,7 +27,7 @@ class SpotifyService:
         return SpotifyUser(**self.spotify.me())
 
     def currently_playing(self):
-        result = self.spotify.currently_playing()
+        result = self.spotify.currently_playing(additional_types='episode')
 
         if result is not None:
             current = SpotifyCurrentPlaying(**result)
