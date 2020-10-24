@@ -1,11 +1,11 @@
 import json
-import asyncio
 from datetime import datetime, date
 
 import spotipy
 from spotipy.oauth2 import SpotifyOAuth
 
 from secrets import SPOTIFY_CLIENT_ID, SPOTIFY_CLIENT_SECRET
+
 
 class SpotifyService:
 
@@ -22,11 +22,13 @@ class SpotifyService:
         return SpotifyUser(**self.spotify.me())
 
     def currently_playing(self):
-        return SpotifyCurrentPlaying(**self.spotify.currently_playing())
+        result = self.spotify.currently_playing()
 
-    async def currently_playing_after_delay(self, delay):
-        await asyncio.sleep(delay)
-        return self.currently_playing()
+        if result is not None:
+            curr = SpotifyCurrentPlaying(**result)
+            return curr if curr.is_playing else None
+        else:
+            return None
 
 
 class SpotifyModel:
@@ -75,10 +77,12 @@ class SpotifyCurrentPlaying(SpotifyModel):
 
     timestamp = None
     item = None
+    is_playing = None
 
-    def __init__(self, timestamp=None, item=None, **kwargs):
+    def __init__(self, timestamp=None, item=None, is_playing=None, **kwargs):
         self.timestamp = datetime.fromtimestamp(timestamp/1000)
         self.item = SpotifyCurrentPlayingItem(type_=item['type'], **item)
+        self.is_playing = is_playing
 
     def is_same_track(self, other):
         return (self.item.name == other.item.name and self.item.album.name == other.item.album.name)
