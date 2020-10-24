@@ -1,6 +1,9 @@
 from datetime import date, datetime
 import json
 
+import logging
+logger = logging.getLogger(__name__)
+
 
 class SpotifyModel:
     def todict(self, obj, classkey=None):
@@ -52,6 +55,29 @@ class SpotifyPlayingInfo(SpotifyModel):
         self.current_playing = current_playing
         self.playlist = playlist
 
+    def is_same_track(self, other):
+        if self.current_playing.context.uri != other.current_playing.context.uri:
+            return False
+
+        if self.current_playing.item.id != other.current_playing.item.id:
+            return False
+
+        if self.playlist is not None:
+            if other.playlist is None:
+                logger.debug("is_same_track: False.")
+                return False
+            else:
+                if self.playlist.id != other.playlist.id:
+                    logger.debug("is_same_track: False.")
+                    return False
+        else:
+            if other.playlist is not None:
+                logger.debug("is_same_track: False.")
+                return False
+
+        logger.debug("is_same_track: True.")
+        return True
+
 
 class SpotifyCurrentPlaying(SpotifyModel):
 
@@ -78,9 +104,6 @@ class SpotifyCurrentPlaying(SpotifyModel):
                 self.progress / self.item.duration * 100, 2)
 
         self.is_playing = is_playing
-
-    def is_same_track(self, other):
-        return self.context.uri == other.context.uri
 
 
 class SpotifyCurrentPlayingContext(SpotifyModel):
@@ -170,9 +193,13 @@ class SpotifyArtist(SpotifyModel):
 
 class SpotifyPlaylist(SpotifyModel):
 
+    id = None
+    uri = None
     name = None
     description = None
 
-    def __init__(self, name=None, description=None, **kwargs):
+    def __init__(self, id=None, uri=None, name=None, description=None, **kwargs):
+        self.id = id
+        self.uri = uri
         self.name = name
         self.description = description
