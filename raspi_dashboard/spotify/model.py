@@ -56,9 +56,6 @@ class SpotifyPlayingInfo(SpotifyModel):
         self.playlist = playlist
 
     def __eq__(self, other):
-        if self.current_playing.context.uri != other.current_playing.context.uri:
-            return False
-
         if self.current_playing.item.id != other.current_playing.item.id:
             return False
 
@@ -131,8 +128,9 @@ class SpotifyCurrentPlayingItem(SpotifyModel):
     album = None
     show = None
     artists = None
+    uri = None
 
-    def __init__(self, id=None, duration_ms=None, type_=None, name=None, album=None, show=None, artists=None, **kwargs):
+    def __init__(self, id=None, duration_ms=None, type_=None, name=None, album=None, show=None, artists=None, uri=None, **kwargs):
         self.id = id
         self.duration = duration_ms
         self.type = type_
@@ -146,6 +144,8 @@ class SpotifyCurrentPlayingItem(SpotifyModel):
 
         if artists is not None:
             self.artists = [SpotifyArtist(**a) for a in artists]
+
+        self.uri = uri
 
 
 class SpotifyCurrentPlayingItemAlbum(SpotifyModel):
