@@ -1,4 +1,4 @@
-import spotify as sp
+from .spotify import SpotifyService
 
 import asyncio
 import datetime
@@ -9,7 +9,7 @@ log_level = logging.INFO
 
 logging.basicConfig(level=log_level)
 
-spotify = sp.SpotifyService()
+spotify = SpotifyService()
 
 
 async def main():
@@ -28,11 +28,13 @@ async def main():
 
         await asyncio.sleep(5)
 
-loop = asyncio.get_event_loop()
-try:
-    loop.run_until_complete(main())
-except KeyboardInterrupt:
-    logging.info("Stopping.")
-finally:
-    loop.close()
-    logging.info("Stopped.")
+
+def start():
+    loop = asyncio.get_event_loop()
+    try:
+        loop.run_until_complete(main())
+    except KeyboardInterrupt:
+        logging.info("Stopping.")
+    finally:
+        loop.close()
+        logging.info("Stopped.")
