@@ -55,7 +55,7 @@ class SpotifyPlayingInfo(SpotifyModel):
         self.current_playing = current_playing
         self.playlist = playlist
 
-    def is_same_track(self, other):
+    def __eq__(self, other):
         if self.current_playing.context.uri != other.current_playing.context.uri:
             return False
 
@@ -77,6 +77,9 @@ class SpotifyPlayingInfo(SpotifyModel):
 
         logger.debug("is_same_track: True.")
         return True
+
+    def __ne__(self, other):
+        return not self.__eq__(other)
 
 
 class SpotifyCurrentPlaying(SpotifyModel):

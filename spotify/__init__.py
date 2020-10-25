@@ -37,7 +37,8 @@ class SpotifyService:
             if current_playing.is_playing:
                 playlist = None
                 if current_playing.context.type == 'playlist':
-                    pl = self.spotify.playlist(current_playing.context.type_id)
+                    pl = self.spotify.playlist(
+                        current_playing.context.type_id, fields='id,uri,name,description')
                     playlist = SpotifyPlaylist(**pl)
 
                 return SpotifyPlayingInfo(current_playing=current_playing, playlist=playlist)

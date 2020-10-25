@@ -11,6 +11,7 @@ logging.basicConfig(level=log_level)
 
 spotify = sp.SpotifyService()
 
+
 async def main():
 
     current = None
@@ -19,7 +20,7 @@ async def main():
         result = spotify.currently_playing()
 
         if result.current_playing is not None:
-            if current is None or (current.current_playing is not None and current.current_playing.timestamp < result.current_playing.timestamp and not result.is_same_track(current)):
+            if current is None or (current.current_playing is not None and result != current):
                 current = result
                 logging.info(result)
         else:
