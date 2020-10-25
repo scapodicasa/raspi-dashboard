@@ -1,5 +1,3 @@
-import logging
-
 import spotipy
 from spotipy.oauth2 import SpotifyOAuth
 
@@ -7,6 +5,7 @@ from secrets import SPOTIFY_CLIENT_ID, SPOTIFY_CLIENT_SECRET
 
 from .model import *
 
+import logging
 logger = logging.getLogger(__name__)
 
 
