@@ -28,4 +28,11 @@ async def main():
 
         await asyncio.sleep(5)
 
-asyncio.run(main())
+loop = asyncio.get_event_loop()
+try:
+    loop.run_until_complete(main())
+except KeyboardInterrupt:
+    logging.info("Stopping.")
+finally:
+    loop.close()
+    logging.info("Stopped.")
