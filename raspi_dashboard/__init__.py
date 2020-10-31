@@ -2,8 +2,9 @@ import asyncio
 
 import time
 
-from .spotify import SpotifyService
 from .clock import ClockService
+from .spotify import SpotifyService
+from .inky import print_clock, print_spotify
 
 import logging
 log_level = logging.INFO
@@ -11,7 +12,7 @@ logging.basicConfig(
     level=log_level, format='[%(levelname)s] %(asctime)s [%(name)s]: %(message)s', datefmt='%d/%m/%Y %H:%M:%S')
 
 spotify = SpotifyService()
-clock = ClockService(lambda: logging.info(time.strftime("%H:%M")))
+clock = ClockService(print_clock)
 
 spotify_stopped = False
 
@@ -36,7 +37,7 @@ async def main():
 
             if current_spotify is None or (current_spotify.current_playing is not None and spotify_result != current_spotify):
                 current_spotify = spotify_result
-                logging.info(spotify_result)
+                print_spotify(spotify_result)
         else:
             current_spotify = None
             if not spotify_stopped:
