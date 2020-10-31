@@ -1,3 +1,4 @@
+import argparse
 import asyncio
 import time
 
@@ -15,13 +16,23 @@ logging.basicConfig(
 logger = logging.getLogger(__name__)
 
 
+def parse_main_args():
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--without_display", action="store_true",
+                        help="Use this program without an Inky display.")
+    return parser.parse_args()
+
+
 async def main():
+    args = parse_main_args()
+
     spotify = initialize_spotify()
     if spotify is None:
         logger.error("Spotify not initializated. Exiting.")
         return
 
-    clock = ClockService(print_clock)
+
+    clock = ClockService(lambda: print_clock(args.without_display))
 
     spotify_stopped = False
     current_spotify = None
@@ -37,7 +48,7 @@ async def main():
 
             if current_spotify is None or (current_spotify.current_playing is not None and spotify_result != current_spotify):
                 current_spotify = spotify_result
-                print_spotify(spotify_result)
+                print_spotify(spotify_result, args.without_display)
         else:
             current_spotify = None
             if not spotify_stopped:

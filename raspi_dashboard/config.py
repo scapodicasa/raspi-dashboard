@@ -16,6 +16,10 @@ config.read(INI_FILE)
 
 def initialize_config():
     parser = argparse.ArgumentParser()
+
+    parser.add_argument("--inky_colour", type=str,
+                        choices=["red", "black", "yellow"], help="Your Inky colour")
+
     parser.add_argument("--spotify_client_id", type=str,
                         help="Your Spotify application Client Id")
     parser.add_argument("--spotify_client_secret", type=str,
@@ -25,21 +29,28 @@ def initialize_config():
 
     args = parser.parse_args()
 
-    if args.spotify_client_id is not None and args.spotify_client_secret is not None and args.spotify_redirect_uri:
-        _create_ini_file(args.spotify_client_id,
-                         args.spotify_client_secret, args.spotify_redirect_uri)
-    elif args.spotify_client_id is None and args.spotify_client_secret is None and args.spotify_redirect_uri:
-        pass
-    else:
-        logger.error("All arguments are needed. Initialization failed.")
-        parser.print_help()
-        return
+    inky_colour = args.inky_colour if args.inky_colour is not None else config['INKY'].get(
+        'colour', "")
+
+    spotify_client_id = args.spotify_client_id if args.spotify_client_id is not None else config['SPOTIFY'].get(
+        'client_id', "")
+    spotify_client_secret = args.spotify_client_secret if args.spotify_client_secret is not None else config['SPOTIFY'].get(
+        'client_secret', "")
+    spotify_redirect_uri = args.spotify_redirect_uri if args.spotify_redirect_uri is not None else config['SPOTIFY'].get(
+        'redirect_uri', "")
+
+    _create_ini_file(inky_colour, spotify_client_id,
+                     spotify_client_secret, spotify_redirect_uri)
 
     if not os.path.exists(LOCAL_DATA_DIR):
         os.makedirs(LOCAL_DATA_DIR)
 
 
-def _create_ini_file(spotify_client_id, spotify_client_secret, spotify_redirect_uri):
+def _create_ini_file(inky_colour, spotify_client_id, spotify_client_secret, spotify_redirect_uri):
+    config['INKY'] = {
+        'colour': inky_colour
+    }
+
     config['SPOTIFY'] = {
         'client_id': spotify_client_id,
         'client_secret': spotify_client_secret,

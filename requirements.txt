@@ -2,4 +2,5 @@ spotipy
 asyncio
 setuptools
 apscheduler
-inky
+pillow
+inky[fonts]
