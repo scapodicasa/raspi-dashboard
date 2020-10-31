@@ -41,9 +41,9 @@ def initialize_config():
 
 def _create_ini_file(spotify_client_id, spotify_client_secret, spotify_redirect_uri):
     config['SPOTIFY'] = {
-        'CLIENT_ID': spotify_client_id,
-        'CLIENT_SECRET': spotify_client_secret,
-        'REDIRECT_URI': spotify_redirect_uri,
+        'client_id': spotify_client_id,
+        'client_secret': spotify_client_secret,
+        'redirect_uri': spotify_redirect_uri,
     }
 
     with open(INI_FILE, 'w') as configfile:

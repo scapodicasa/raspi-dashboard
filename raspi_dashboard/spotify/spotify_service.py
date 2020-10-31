@@ -18,9 +18,9 @@ class SpotifyService:
     def __init__(self):
         logger.info("Initializing Spotify service.")
 
-        self.spotify = spotipy.Spotify(auth_manager=SpotifyOAuth(client_id=CONFIG['SPOTIFY']['CLIENT_ID'],
-                                                                 client_secret=CONFIG['SPOTIFY']['CLIENT_SECRET'],
-                                                                 redirect_uri=CONFIG['SPOTIFY']['REDIRECT_URI'],
+        self.spotify = spotipy.Spotify(auth_manager=SpotifyOAuth(client_id=CONFIG['SPOTIFY']['client_id'],
+                                                                 client_secret=CONFIG['SPOTIFY']['client_secret'],
+                                                                 redirect_uri=CONFIG['SPOTIFY']['redirect_uri'],
                                                                  open_browser=False,
                                                                  scope="user-library-read user-read-playback-state",
                                                                  cache_path=join(LOCAL_DATA_DIR, "spotify-cache")))
