@@ -56,21 +56,35 @@ class SpotifyPlayingInfo(SpotifyModel):
         self.playlist = playlist
 
     def __eq__(self, other):
-        if self.current_playing.item.id != other.current_playing.item.id:
+
+        def check_object(first, second, property_check_func):
+            if first is not None:
+                if second is None:
+                    logger.debug("check_object: False.")
+                    return False
+                else:
+                    if property_check_func is not None and property_check_func(first) != property_check_func(second):
+                        logger.debug("check_object: False.")
+                        return False
+            else:
+                if second is not None:
+                    logger.debug("check_object: False.")
+                    return False
+
+            logger.debug("check_object: True.")
+            return True
+
+        if not check_object(self.current_playing.context, other.current_playing.context, lambda context: context.uri):
+            logger.debug("is_same_track: False.")
             return False
 
-        if self.playlist is not None:
-            if other.playlist is None:
-                logger.debug("is_same_track: False.")
-                return False
-            else:
-                if self.playlist.id != other.playlist.id:
-                    logger.debug("is_same_track: False.")
-                    return False
-        else:
-            if other.playlist is not None:
-                logger.debug("is_same_track: False.")
-                return False
+        if self.current_playing.item.id != other.current_playing.item.id:
+            logger.debug("is_same_track: False.")
+            return False
+
+        if not check_object(self.playlist, other.playlist, lambda playlist: playlist.id):
+            logger.debug("is_same_track: False.")
+            return False
 
         logger.debug("is_same_track: True.")
         return True
