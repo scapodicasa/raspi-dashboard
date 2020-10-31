@@ -1,3 +1,5 @@
 spotipy
 asyncio
 setuptools
+apscheduler
+inky

@@ -1,4 +1,6 @@
 examples_jsons/
 
+__pycache__/
+
 secrets.py
 .cache

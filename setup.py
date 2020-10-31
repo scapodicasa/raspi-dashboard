@@ -13,7 +13,8 @@ setup(
     long_description=long_description,
     long_description_content_type='text/markdown',
     packages=['raspi_dashboard',
-              'raspi_dashboard.spotify'],
+              'raspi_dashboard.spotify',
+              'raspi_dashboard.clock'],
     entry_points={
         'console_scripts': [
             'raspi-dashboard = raspi_dashboard:start',
