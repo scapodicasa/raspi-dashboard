@@ -43,8 +43,8 @@ class SpotifyUser(SpotifyModel):
     id = None
 
     def __init__(self, display_name=None, id=None, **kwargs):
-        self.display_name = display_name
-        self.id = id
+        self.display_name = display_name if display_name is not None else ""
+        self.id = id if id is not None else ""
 
 
 class SpotifyPlayingInfo(SpotifyModel):
