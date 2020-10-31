@@ -11,6 +11,8 @@ log_level = logging.INFO
 logging.basicConfig(
     level=log_level, format='[%(levelname)s] %(asctime)s [%(name)s]: %(message)s', datefmt='%d/%m/%Y %H:%M:%S')
 
+logger = logging.getLogger(__name__)
+
 spotify = SpotifyService()
 clock = ClockService(print_clock)
 
@@ -27,7 +29,7 @@ async def main():
         try:
             spotify_result = spotify.currently_playing()
         except Exception as ex:
-            logging.exception(ex)
+            logger.exception(ex)
 
         if spotify_result.current_playing is not None:
             spotify_stopped = False
@@ -48,11 +50,12 @@ async def main():
 
 
 def start():
+    logger.info("Starting.")
     loop = asyncio.get_event_loop()
     try:
         loop.run_until_complete(main())
     except KeyboardInterrupt:
-        logging.info("Stopping.")
+        logger.info("Stopping.")
     finally:
         loop.close()
-        logging.info("Stopped.")
+        logger.info("Stopped.")
