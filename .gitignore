@@ -1,9 +1,4 @@
 examples_jsons/
 
-build/
-dist/
-*.egg*
-__pycache__/
-
 secrets.py
 .cache

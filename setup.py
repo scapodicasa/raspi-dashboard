@@ -24,7 +24,6 @@ setup(
     install_requires=list(val.strip() for val in open('requirements.txt')),
     classifiers=[
         'Intended Audience :: Developers',
-        'Operating System :: OS Independent',
         'Programming Language :: Python',
         'Programming Language :: Python :: 3',
         'Topic :: System :: Hardware'
