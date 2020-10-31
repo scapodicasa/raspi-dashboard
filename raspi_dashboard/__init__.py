@@ -1,9 +1,9 @@
-from .spotify import SpotifyService
-from .clock import ClockService
-
 import asyncio
 
 import time
+
+from .spotify import SpotifyService
+from .clock import ClockService
 
 import logging
 log_level = logging.INFO
@@ -19,30 +19,29 @@ spotify_stopped = False
 async def main():
     global spotify_stopped
 
-    current = None
+    current_spotify = None
 
     while True:
+        spotify_result = None
         try:
-            result = spotify.currently_playing()
-
-            if result.current_playing is not None:
-                spotify_stopped = False
-
-                if clock.is_running():
-                    clock.stop()
-
-                if current is None or (current.current_playing is not None and result != current):
-                    current = result
-                    logging.info(result)
-            else:
-                current = None
-                if not spotify_stopped:
-                    spotify_stopped = True
-                    clock.start()
-
-
+            spotify_result = spotify.currently_playing()
         except Exception as ex:
             logging.exception(ex)
+
+        if spotify_result.current_playing is not None:
+            spotify_stopped = False
+
+            if clock.is_running():
+                clock.stop()
+
+            if current_spotify is None or (current_spotify.current_playing is not None and spotify_result != current_spotify):
+                current_spotify = spotify_result
+                logging.info(spotify_result)
+        else:
+            current_spotify = None
+            if not spotify_stopped:
+                spotify_stopped = True
+                clock.start()
 
         await asyncio.sleep(5)
 
