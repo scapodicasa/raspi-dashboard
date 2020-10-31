@@ -19,13 +19,14 @@ setup(
     entry_points={
         'console_scripts': [
             'raspi-dashboard = raspi_dashboard:start',
+            'raspi-dashboard-init = raspi_dashboard:initialize',
         ]
     },
     zip_safe=True,
     platforms='any',
     install_requires=list(val.strip() for val in open('requirements.txt')),
     classifiers=[
-        'Intended Audience :: Developers',
+        "Intended Audience :: End Users/Desktop",
         'Programming Language :: Python',
         'Programming Language :: Python :: 3',
         'Topic :: System :: Hardware'

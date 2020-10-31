@@ -13,25 +13,19 @@ logging.basicConfig(
 
 logger = logging.getLogger(__name__)
 
-spotify = SpotifyService()
-clock = ClockService(print_clock)
-
-spotify_stopped = False
+spotify = None
+clock = None
 
 
 async def main():
-    global spotify_stopped
-
+    setup()
+    spotify_stopped = False
     current_spotify = None
 
     while True:
-        spotify_result = None
-        try:
-            spotify_result = spotify.currently_playing()
-        except Exception as ex:
-            logger.exception(ex)
+        spotify_result = spotify.currently_playing()
 
-        if spotify_result.current_playing is not None:
+        if spotify_result is not None and spotify_result.current_playing is not None:
             spotify_stopped = False
 
             if clock.is_running():
@@ -59,3 +53,20 @@ def start():
     finally:
         loop.close()
         logger.info("Stopped.")
+
+
+def initialize():
+    global spotify
+    spotify = SpotifyService()
+    user = spotify.user()
+    if user is not None:
+        logger.info(f"Logged as: {user.display_name} aka {user.id}")
+    else:
+        logger.error("Spotify login failed.")
+
+
+def setup():
+    initialize()
+
+    global clock
+    clock = ClockService(print_clock)

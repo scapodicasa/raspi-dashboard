@@ -1,3 +1,5 @@
+from os.path import expanduser
+
 import spotipy
 from spotipy.oauth2 import SpotifyOAuth
 
@@ -20,14 +22,26 @@ class SpotifyService:
                                                                  client_secret=SPOTIFY_CLIENT_SECRET,
                                                                  redirect_uri="http://localhost",
                                                                  open_browser=False,
-                                                                 scope="user-library-read user-read-playback-state"))
+                                                                 scope="user-library-read user-read-playback-state",
+                                                                 cache_path=f"{(expanduser('~'))}/.raspi-dashboard-spotify"))
 
     def user(self):
-        return SpotifyUser(**self.spotify.me())
+        try:
+            us = self.spotify.me()
+            return SpotifyUser(**us)
+        except Exception as ex:
+            logger.info("Spotify remote call failed.")
+            logger.debug(ex)
+            return None
 
     def currently_playing(self):
-
-        cp = self.spotify.currently_playing(additional_types='episode')
+        cp = None
+        try:
+            cp = self.spotify.currently_playing(additional_types='episode')
+        except Exception as ex:
+            logger.info("Spotify remote call failed.")
+            logger.debug(ex)
+            return SpotifyPlayingInfo()
 
         if cp is not None:
             current_playing = SpotifyCurrentPlaying(**cp)
@@ -39,13 +53,15 @@ class SpotifyService:
                     pl = self.spotify.playlist(
                         current_playing.context.type_id, fields='id,uri,name,description')
                     playlist = SpotifyPlaylist(**pl)
+                    logger.debug(f"Playlist: {playlist}")
+                else:
+                    logger.debug("Context is not playlist.")
 
                 return SpotifyPlayingInfo(current_playing=current_playing, playlist=playlist)
             else:
                 logger.debug(
-                    "Got playing info from Spotify, but it's not playing. Returning None.")
+                    "Got playing info from Spotify, but it's not playing.")
                 return SpotifyPlayingInfo()
         else:
-            logger.debug(
-                "Playing info was not provided from Spotify. Returning None.")
+            logger.debug("Playing info was not provided from Spotify.")
             return SpotifyPlayingInfo()
