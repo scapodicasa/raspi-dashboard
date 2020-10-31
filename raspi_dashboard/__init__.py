@@ -1,8 +1,7 @@
-import os
 import asyncio
 import time
 
-from .config import LOCAL_DATA_DIR
+from .config import initialize_config
 
 from .clock import ClockService
 from .spotify import SpotifyService
@@ -15,12 +14,15 @@ logging.basicConfig(
 
 logger = logging.getLogger(__name__)
 
-spotify = None
-clock = None
-
 
 async def main():
-    setup()
+    spotify = initialize_spotify()
+    if spotify is None:
+        logger.error("Spotify not initializated. Exiting.")
+        return
+
+    clock = ClockService(print_clock)
+
     spotify_stopped = False
     current_spotify = None
 
@@ -58,21 +60,26 @@ def start():
 
 
 def initialize():
-    if not os.path.exists(LOCAL_DATA_DIR):
-        os.makedirs(LOCAL_DATA_DIR)
-
-    global spotify
-    spotify = SpotifyService()
-    user = spotify.user()
-
-    if user is not None:
-        logger.info(f"Logged as: {user.display_name} aka {user.id}")
-    else:
-        logger.error("Spotify login failed.")
+    try:
+        initialize_config()
+        initialize_spotify()
+    except KeyboardInterrupt:
+        pass
 
 
-def setup():
-    initialize()
+def initialize_spotify():
+    spotify = None
+    try:
+        spotify = SpotifyService()
+        user = spotify.user()
 
-    global clock
-    clock = ClockService(print_clock)
+        if user is not None:
+            logger.info(f"Logged as: {user.display_name} aka {user.id}")
+        else:
+            logger.error("Spotify login failed.")
+
+    except Exception as ex:
+        logger.debug(ex)
+        logger.error("Spotify initialization failed.")
+
+    return spotify

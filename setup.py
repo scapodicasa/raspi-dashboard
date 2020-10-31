@@ -26,7 +26,7 @@ setup(
     platforms='any',
     install_requires=list(val.strip() for val in open('requirements.txt')),
     classifiers=[
-        "Intended Audience :: End Users/Desktop",
+        'Intended Audience :: End Users/Desktop',
         'Programming Language :: Python',
         'Programming Language :: Python :: 3',
         'Topic :: System :: Hardware'
