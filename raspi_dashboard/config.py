@@ -20,16 +20,18 @@ def initialize_config():
                         help="Your Spotify application Client Id")
     parser.add_argument("--spotify_client_secret", type=str,
                         help="Your Spotify application Client secret")
+    parser.add_argument("--spotify_redirect_uri", type=str,
+                        help="Your Spotify application redirect URI")
 
     args = parser.parse_args()
 
-    if args.spotify_client_id is not None and args.spotify_client_secret is not None:
-        _create_ini_file(args.spotify_client_id, args.spotify_client_secret)
-    elif args.spotify_client_id is None and args.spotify_client_secret is None:
+    if args.spotify_client_id is not None and args.spotify_client_secret is not None and args.spotify_redirect_uri:
+        _create_ini_file(args.spotify_client_id,
+                         args.spotify_client_secret, args.spotify_redirect_uri)
+    elif args.spotify_client_id is None and args.spotify_client_secret is None and args.spotify_redirect_uri:
         pass
     else:
-        logger.error(
-            "Both [--spotify_client_id] and [--spotify_client_secret] are needed to initialize. Initialization failed.")
+        logger.error("All arguments are needed. Initialization failed.")
         parser.print_help()
         return
 
@@ -37,10 +39,11 @@ def initialize_config():
         os.makedirs(LOCAL_DATA_DIR)
 
 
-def _create_ini_file(spotify_client_id, spotify_client_secret):
+def _create_ini_file(spotify_client_id, spotify_client_secret, spotify_redirect_uri):
     config['SPOTIFY'] = {
         'CLIENT_ID': spotify_client_id,
         'CLIENT_SECRET': spotify_client_secret,
+        'REDIRECT_URI': spotify_redirect_uri,
     }
 
     with open(INI_FILE, 'w') as configfile:

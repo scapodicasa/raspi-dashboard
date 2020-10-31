@@ -20,7 +20,7 @@ class SpotifyService:
 
         self.spotify = spotipy.Spotify(auth_manager=SpotifyOAuth(client_id=CONFIG['SPOTIFY']['CLIENT_ID'],
                                                                  client_secret=CONFIG['SPOTIFY']['CLIENT_SECRET'],
-                                                                 redirect_uri="http://localhost",
+                                                                 redirect_uri=CONFIG['SPOTIFY']['REDIRECT_URI'],
                                                                  open_browser=False,
                                                                  scope="user-library-read user-read-playback-state",
                                                                  cache_path=join(LOCAL_DATA_DIR, "spotify-cache")))
