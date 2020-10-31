@@ -3,9 +3,7 @@ from os.path import expanduser, join
 import spotipy
 from spotipy.oauth2 import SpotifyOAuth
 
-from ..config import CONFIG_DIR
-
-from ..secrets import SPOTIFY_CLIENT_ID, SPOTIFY_CLIENT_SECRET
+from ..config import LOCAL_DATA_DIR, CONFIG
 
 from .model import SpotifyUser, SpotifyCurrentPlaying, SpotifyPlaylist, SpotifyPlayingInfo
 
@@ -20,12 +18,12 @@ class SpotifyService:
     def __init__(self):
         logger.info("Initializing Spotify service.")
 
-        self.spotify = spotipy.Spotify(auth_manager=SpotifyOAuth(client_id=SPOTIFY_CLIENT_ID,
-                                                                 client_secret=SPOTIFY_CLIENT_SECRET,
+        self.spotify = spotipy.Spotify(auth_manager=SpotifyOAuth(client_id=CONFIG['SPOTIFY']['SPOTIFY_CLIENT_ID'],
+                                                                 client_secret=CONFIG['SPOTIFY']['SPOTIFY_CLIENT_SECRET'],
                                                                  redirect_uri="http://localhost",
                                                                  open_browser=False,
                                                                  scope="user-library-read user-read-playback-state",
-                                                                 cache_path=join(CONFIG_DIR, "spotipy-cache")))
+                                                                 cache_path=join(LOCAL_DATA_DIR, "spotipy-cache")))
 
     def user(self):
         try:

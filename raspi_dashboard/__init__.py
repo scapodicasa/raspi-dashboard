@@ -2,7 +2,7 @@ import os
 import asyncio
 import time
 
-from .config import CONFIG_DIR
+from .config import LOCAL_DATA_DIR
 
 from .clock import ClockService
 from .spotify import SpotifyService
@@ -58,8 +58,8 @@ def start():
 
 
 def initialize():
-    if not os.path.exists(CONFIG_DIR):
-        os.makedirs(CONFIG_DIR)
+    if not os.path.exists(LOCAL_DATA_DIR):
+        os.makedirs(LOCAL_DATA_DIR)
 
     global spotify
     spotify = SpotifyService()
