@@ -1,6 +1,8 @@
+import os
 import asyncio
-
 import time
+
+from .config import CONFIG_DIR
 
 from .clock import ClockService
 from .spotify import SpotifyService
@@ -56,9 +58,13 @@ def start():
 
 
 def initialize():
+    if not os.path.exists(CONFIG_DIR):
+        os.makedirs(CONFIG_DIR)
+
     global spotify
     spotify = SpotifyService()
     user = spotify.user()
+
     if user is not None:
         logger.info(f"Logged as: {user.display_name} aka {user.id}")
     else:

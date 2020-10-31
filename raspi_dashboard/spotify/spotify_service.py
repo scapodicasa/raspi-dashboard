@@ -1,7 +1,9 @@
-from os.path import expanduser
+from os.path import expanduser, join
 
 import spotipy
 from spotipy.oauth2 import SpotifyOAuth
+
+from ..config import CONFIG_DIR
 
 from ..secrets import SPOTIFY_CLIENT_ID, SPOTIFY_CLIENT_SECRET
 
@@ -23,7 +25,7 @@ class SpotifyService:
                                                                  redirect_uri="http://localhost",
                                                                  open_browser=False,
                                                                  scope="user-library-read user-read-playback-state",
-                                                                 cache_path=f"{(expanduser('~'))}/.raspi-dashboard-spotify"))
+                                                                 cache_path=join(CONFIG_DIR, "spotipy-cache")))
 
     def user(self):
         try:
