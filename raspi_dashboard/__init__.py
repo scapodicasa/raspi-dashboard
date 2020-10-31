@@ -74,7 +74,7 @@ def initialize_spotify():
         user = spotify.user()
 
         if user is not None:
-            logger.info(f"Logged as: {user.display_name} aka {user.id}")
+            logger.info(f"Logged as: {user.display_name} a.k.a. {user.id}")
         else:
             logger.error("Spotify login failed.")
 
