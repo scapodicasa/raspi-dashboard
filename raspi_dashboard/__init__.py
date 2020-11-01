@@ -2,10 +2,8 @@ import argparse
 import asyncio
 import time
 
-from .config import initialize_config
-
-from .clock import ClockService
-from .spotify import SpotifyService
+from .core.config import initialize_config
+from .core.services import ClockService, SpotifyService, ServiceBase
 from .inky import DisplayMode
 from .inky.printer import ClockPrinter, SpotifyPrinter
 
@@ -24,7 +22,7 @@ def parse_main_args():
     return parser.parse_args()
 
 
-async def main():
+def main():
     args = parse_main_args()
 
     spotify = initialize_spotify()
@@ -32,38 +30,33 @@ async def main():
         logger.error("Spotify not initializated. Exiting.")
         return
 
+    spotify.register(SpotifyService.Events.ON_STOP_PLAYING,
+                     lambda: clock.start())
+
+    def handle_spotify_start_playing(track):
+        SpotifyPrinter(args.display, track).print()
+        clock.stop()
+
+    spotify.register(SpotifyService.Events.ON_START_PLAYING,
+                     handle_spotify_start_playing)
+    spotify.register(SpotifyService.Events.ON_TRACK_CHANGE,
+                     lambda track: SpotifyPrinter(args.display, track).print())
+
     clock_printer = ClockPrinter(args.display)
-    clock = ClockService(lambda: clock_printer.print())
+    clock = ClockService()
+    clock.register(ServiceBase.Events.ON_TRIGGER,
+                   lambda: clock_printer.print())
 
-    spotify_stopped = False
-    current_spotify = None
-
-    while True:
-        spotify_result = spotify.currently_playing()
-
-        if spotify_result is not None and spotify_result.current_playing is not None:
-            spotify_stopped = False
-
-            if clock.is_running():
-                clock.stop()
-
-            if current_spotify is None or (current_spotify.current_playing is not None and spotify_result != current_spotify):
-                current_spotify = spotify_result
-                SpotifyPrinter(args.display, spotify_result).print()
-        else:
-            current_spotify = None
-            if not spotify_stopped:
-                spotify_stopped = True
-                clock.start()
-
-        await asyncio.sleep(5)
+    clock.start()
+    spotify.start()
 
 
 def start():
     logger.info("Starting.")
     loop = asyncio.get_event_loop()
     try:
-        loop.run_until_complete(main())
+        main()
+        loop.run_forever()
     except KeyboardInterrupt:
         logger.info("Stopping.")
     finally:

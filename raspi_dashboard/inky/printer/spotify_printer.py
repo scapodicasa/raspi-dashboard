@@ -8,7 +8,7 @@ class SpotifyPrinter(PrinterBase):
     _result = None
 
     def __init__(self, display_mode, result):
-        PrinterBase.__init__(self, display_mode)
+        super().__init__(display_mode)
         self._result = result
 
     def print_console(self):

@@ -1,7 +1,7 @@
 from inky import InkyPHAT, InkyMockPHAT
 
 from .. import DisplayMode
-from ...config import CONFIG
+from ...core.config import CONFIG
 
 import logging
 logger = logging.getLogger(__name__)

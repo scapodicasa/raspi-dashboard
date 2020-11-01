@@ -1,28 +1,36 @@
 from datetime import datetime, timedelta
+from enum import Enum
 
 from apscheduler.schedulers.asyncio import AsyncIOScheduler
 from apscheduler.triggers.date import DateTrigger
+
+from ..publisher import Publisher
 
 import logging
 logger = logging.getLogger(__name__)
 
 
-class ClockService:
+class ServiceBase(Publisher):
 
     _scheduler = None
-    _func = None
     _running = None
 
-    def __init__(self, func):
+    class Events(Enum):
+        ON_TRIGGER = 'on_trigger'
+
+    def __init__(self):
+        Publisher.__init__(self, events=[mode for mode in self.Events])
+        self._internal_init()
+
+    def _internal_init(self):
         self._scheduler = AsyncIOScheduler()
-        self._func = func
         self._running = False
 
     def start(self):
-        logger.info("Starting Clock")
+        logger.info("Starting")
 
         if not self._scheduler.running:
-            logger.debug("Starting clock scheduler")
+            logger.debug("Starting scheduler")
             self._scheduler.start()
 
         self._running = True
@@ -32,24 +40,26 @@ class ClockService:
         return self._running
 
     def stop(self):
-        logger.info("Stopping Clock")
+        logger.info("Stopping")
         self._running = False
+
+    def get_next_trigger(self):
+        raise Exception('get_next_trigger() not implemented')
 
     def _do(self):
         if self._running:
             logger.info("Executing payload.")
 
-            self._func()
+            self.dispatch(ServiceBase.Events.ON_TRIGGER)
 
             if len(self._scheduler.get_jobs()) == 0:
-                logger.debug("Scheduling next clock iteration")
+                logger.debug("Scheduling next iteration")
 
-                now = datetime.now()
-                now = now + timedelta(minutes=1)
-                self._scheduler.add_job(self._do, DateTrigger(datetime(
-                    now.year, now.month, now.day, now.hour, now.minute)), misfire_grace_time=604800)
+                self._scheduler.add_job(
+                    self._do, self.get_next_trigger(), misfire_grace_time=604800)
             else:
                 logger.debug(
                     "Next iteration not scheduled because of some jobs are already scheduled")
         else:
-            logger.debug("Payload not executed because Clock is not running.")
+            logger.debug(
+                "Payload not executed because service is not running.")

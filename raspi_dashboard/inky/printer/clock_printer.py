@@ -4,7 +4,7 @@ from PIL import Image, ImageFont, ImageDraw
 from font_intuitive import Intuitive
 
 from .printer_base import PrinterBase
-from ...config import CONFIG
+from ...core.config import CONFIG
 
 import logging
 logger = logging.getLogger(__name__)

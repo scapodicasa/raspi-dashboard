@@ -13,8 +13,9 @@ setup(
     long_description=long_description,
     long_description_content_type='text/markdown',
     packages=['raspi_dashboard',
-              'raspi_dashboard.clock',
-              'raspi_dashboard.spotify',
+              'raspi_dashboard.core',
+              'raspi_dashboard.core.services',
+              'raspi_dashboard.core.services.spotify',
               'raspi_dashboard.inky',
               'raspi_dashboard.inky.printer'],
     entry_points={
