@@ -7,8 +7,7 @@ from .config import initialize_config
 from .clock import ClockService
 from .spotify import SpotifyService
 from .inky import DisplayMode
-from .inky.clock import ClockPrinter
-from .inky.spotify import SpotifyPrinter
+from .inky.printer import ClockPrinter, SpotifyPrinter
 
 import logging
 log_level = logging.INFO

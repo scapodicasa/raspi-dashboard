@@ -15,7 +15,8 @@ setup(
     packages=['raspi_dashboard',
               'raspi_dashboard.clock',
               'raspi_dashboard.spotify',
-              'raspi_dashboard.inky'],
+              'raspi_dashboard.inky',
+              'raspi_dashboard.inky.printer'],
     entry_points={
         'console_scripts': [
             'raspi-dashboard = raspi_dashboard:start',

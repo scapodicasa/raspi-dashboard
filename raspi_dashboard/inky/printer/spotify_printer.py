@@ -1,14 +1,14 @@
-from . import Printer
+from .printer_base import PrinterBase
 
 import logging
 logger = logging.getLogger(__name__)
 
 
-class SpotifyPrinter(Printer):
+class SpotifyPrinter(PrinterBase):
     _result = None
 
     def __init__(self, display_mode, result):
-        Printer.__init__(self, display_mode)
+        PrinterBase.__init__(self, display_mode)
         self._result = result
 
     def print_console(self):

@@ -3,14 +3,14 @@ import time
 from PIL import Image, ImageFont, ImageDraw
 from font_intuitive import Intuitive
 
-from . import Printer
-from ..config import CONFIG
+from .printer_base import PrinterBase
+from ...config import CONFIG
 
 import logging
 logger = logging.getLogger(__name__)
 
 
-class ClockPrinter(Printer):
+class ClockPrinter(PrinterBase):
 
     def print_console(self):
         now = time.strftime("%H:%M")
