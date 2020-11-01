@@ -6,7 +6,9 @@ from .config import initialize_config
 
 from .clock import ClockService
 from .spotify import SpotifyService
-from .inky import print_clock, print_spotify
+from .inky import DisplayMode
+from .inky.clock import ClockPrinter
+from .inky.spotify import SpotifyPrinter
 
 import logging
 log_level = logging.INFO
@@ -18,8 +20,8 @@ logger = logging.getLogger(__name__)
 
 def parse_main_args():
     parser = argparse.ArgumentParser()
-    parser.add_argument("--without_display", action="store_true",
-                        help="Use this program without an Inky display.")
+    parser.add_argument(
+        "--display", choices=[mode.value for mode in DisplayMode], help="Use this program without an Inky display.")
     return parser.parse_args()
 
 
@@ -31,8 +33,8 @@ async def main():
         logger.error("Spotify not initializated. Exiting.")
         return
 
-
-    clock = ClockService(lambda: print_clock(args.without_display))
+    clock_printer = ClockPrinter(args.display)
+    clock = ClockService(lambda: clock_printer.print())
 
     spotify_stopped = False
     current_spotify = None
@@ -48,7 +50,7 @@ async def main():
 
             if current_spotify is None or (current_spotify.current_playing is not None and spotify_result != current_spotify):
                 current_spotify = spotify_result
-                print_spotify(spotify_result, args.without_display)
+                SpotifyPrinter(args.display, spotify_result).print()
         else:
             current_spotify = None
             if not spotify_stopped:
