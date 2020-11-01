@@ -46,8 +46,8 @@ class ClockService:
 
                 now = datetime.now()
                 now = now + timedelta(minutes=1)
-                self._scheduler.add_job(self._do, DateTrigger(
-                    datetime(now.year, now.month, now.day, now.hour, now.minute)))
+                self._scheduler.add_job(self._do, DateTrigger(datetime(
+                    now.year, now.month, now.day, now.hour, now.minute)), misfire_grace_time=604800)
             else:
                 logger.debug(
                     "Next iteration not scheduled because of some jobs are already scheduled")
