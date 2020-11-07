@@ -30,7 +30,7 @@ class PrinterBase:
             logger.info("Press Ctrl+C or close window to exit.")
             inky_display.wait_for_window_close()
         else:
-            logger.warning("Printing on hardware display not yet implemented.")
+            self.print_display(inky_display)
 
     def print_console(self):
         pass
