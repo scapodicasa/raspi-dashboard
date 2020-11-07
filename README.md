@@ -16,7 +16,7 @@ This project is developed to run on a [Raspberry Pi](https://www.raspberrypi.org
 Install required packages with:
 
 ``` bash
-sudo apt install python3 python3-pip
+sudo apt install python3 python3-pip python3-numpy libtiff5 libopenjp2-7
 ```
 
 You will need to create an API application with your Spotify account as explained in the [official Spotify documentation](https://developer.spotify.com/documentation/general/guides/app-settings/#register-your-app "Documentation on registering a Spotify application"). Take note of your ```Client ID```, ```Client Secret``` and whitelist one redirect URI of your choice. The redirect URI does not need to be remotely accessible.

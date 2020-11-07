@@ -3,4 +3,4 @@ asyncio
 setuptools
 apscheduler
 pillow
-inky[fonts]
+inky[rpi,fonts]
