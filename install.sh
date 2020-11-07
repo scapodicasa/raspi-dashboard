@@ -1,19 +1,27 @@
 #!/bin/bash
 
-while [ -n "$1" ]; do # while loop starts
+function install {
+    pip3 install --user .;
+}
 
-	case "$1" in
+function uninstall {
+    pip3 uninstall raspi_dashboard
+}
 
-	-i) pip3 install --user .; exit ;;
-
-	-u) pip3 uninstall raspi_dashboard; exit ;;
-
-    *) echo "Option $1 not recognized"; exit ;;
-
-	esac
-
-	shift
-
+while [ -n "$1" ]; do
+    
+    case "$1" in
+        
+        -i) install; exit ;;
+        
+        -u) uninstall; exit ;;
+        
+        *) echo "Option $1 not recognized"; exit ;;
+        
+    esac
+    
+    shift
+    
 done
 
-pip3 install --user .
+install
