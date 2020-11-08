@@ -1,6 +1,8 @@
 import argparse
 import asyncio
 import atexit
+from signal import *
+import sys
 import time
 
 from .core.config import initialize_config
@@ -23,14 +25,16 @@ def parse_main_args():
     return parser.parse_args()
 
 
-def stop_print(args):
-    StopPrinter(args.display).print()
-
-
 def main():
     args = parse_main_args()
 
-    atexit.register(lambda: stop_print(args))
+    def stop_print(signum, frame):
+        logger.info(f"Received signal {signum}. Exiting.")
+        StopPrinter(args.display).print()
+        sys.exit(0)
+
+    for sig in (SIGABRT, SIGILL, SIGINT, SIGSEGV, SIGTERM):
+        signal(sig, stop_print)
 
     spotify = initialize_spotify()
     if spotify is None:
