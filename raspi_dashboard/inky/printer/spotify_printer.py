@@ -97,7 +97,7 @@ A: {artist}"""
             draw.multiline_text((w, h), msg, inky_display.WHITE,
                                 font=intuitive_font)
 
-            inky_display.set_border(inky_display.RED)
+            inky_display.set_border(self._colour)
 
             inky_display.set_image(img)
             inky_display.show()

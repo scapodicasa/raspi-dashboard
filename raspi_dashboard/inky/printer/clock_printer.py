@@ -20,7 +20,7 @@ class ClockPrinter(PrinterBase):
 
         scale_size = 1
 
-        inky_display.set_border(inky_display.RED)
+        inky_display.set_border(self._colour)
 
         img = Image.new("P", (inky_display.WIDTH, inky_display.HEIGHT))
         draw = ImageDraw.Draw(img)
