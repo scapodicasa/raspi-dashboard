@@ -68,7 +68,7 @@ class SpotifyService(ServiceBase):
 
         call_result = None
         try:
-            call_result = self.spotify.currently_playing(
+            call_result = self.spotify.current_playback(
                 additional_types='episode')
         except Exception as ex:
             logger.info("Spotify remote call failed.")

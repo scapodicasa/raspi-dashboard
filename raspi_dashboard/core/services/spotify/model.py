@@ -86,6 +86,10 @@ class SpotifyPlayingInfo(SpotifyModel):
             logger.debug("is_same_track: False.")
             return False
 
+        if not check_object(self.current_playing.device, other.current_playing.device, lambda device: device.id):
+            logger.debug("is_same_track: False.")
+            return False
+
         logger.debug("is_same_track: True.")
         return True
 
@@ -95,6 +99,7 @@ class SpotifyPlayingInfo(SpotifyModel):
 
 class SpotifyCurrentPlaying(SpotifyModel):
 
+    device = None
     timestamp = None
     context = None
     progress = None
@@ -103,7 +108,10 @@ class SpotifyCurrentPlaying(SpotifyModel):
 
     progress_percentage = None
 
-    def __init__(self, timestamp=None, context=None, progress_ms=None, item=None, is_playing=None, **kwargs):
+    def __init__(self, device=None, timestamp=None, context=None, progress_ms=None, item=None, is_playing=None, **kwargs):
+        if device is not None:
+            self.device = SpotifyDevice(**device)
+
         self.timestamp = datetime.fromtimestamp(timestamp/1000)
         self.progress = progress_ms
 
@@ -220,3 +228,12 @@ class SpotifyPlaylist(SpotifyModel):
         self.uri = uri
         self.name = name
         self.description = description
+
+
+class SpotifyDevice(SpotifyModel):
+    id = None
+    name = None
+
+    def __init__(self, id=None, name=None, **kwargs):
+        self.id = id
+        self.name = name
