@@ -1,11 +1,12 @@
 import argparse
 import asyncio
+import atexit
 import time
 
 from .core.config import initialize_config
 from .core.services import ClockService, SpotifyService, ServiceBase
 from .inky import DisplayMode
-from .inky.printer import ClockPrinter, SpotifyPrinter
+from .inky.printer import ClockPrinter, SpotifyPrinter, StopPrinter
 
 import logging
 log_level = logging.INFO
@@ -22,8 +23,14 @@ def parse_main_args():
     return parser.parse_args()
 
 
+def stop_print(args):
+    StopPrinter(args.display).print()
+
+
 def main():
     args = parse_main_args()
+
+    atexit.register(lambda: stop_print(args))
 
     spotify = initialize_spotify()
     if spotify is None:
