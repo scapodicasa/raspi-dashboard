@@ -2,7 +2,7 @@
 <strong>
     <h1>Raspi Dashboard</h1>
 
-    a simple dashboard to display what is now playing on your Spotify on a little eink display
+    A dashboard built for RaspberryPi and Inky pHAT displaying what is now playing on your Spotify
 
 </strong>
 </div>
