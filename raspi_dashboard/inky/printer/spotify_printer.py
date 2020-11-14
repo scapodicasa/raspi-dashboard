@@ -15,7 +15,8 @@ logger = logging.getLogger(__name__)
 class SpotifyPrinter(PrinterBase):
     _result = None
 
-    _margin = 7
+    _margin_w = 7
+    _margin_h = 5
 
     def __init__(self, display_mode, result):
         super().__init__(display_mode)
@@ -71,44 +72,57 @@ class SpotifyPrinter(PrinterBase):
             if image_found:
                 a = inky_display.HEIGHT / 2
                 b = len(bw) / 2
-                c = self._margin + len(bw[0])
+                c = self._margin_w + len(bw[0])
 
             for y in range(0, inky_display.HEIGHT):
                 for x in range(0, inky_display.WIDTH):
                     color = inky_display.BLACK
                     if image_found:
                         if y >= a - b and y < a + b:
-                            if x >= self._margin and x < c:
-                                if bw[int(y - (a - b))][int(x - self._margin)] > 128:
+                            if x >= self._margin_w and x < c:
+                                if bw[int(y - (a - b))][int(x - self._margin_w)] > 128:
                                     color = inky_display.WHITE
 
                     img.putpixel((x, y), color)
 
-            font = ImageFont.truetype(Roboto, size=12)
+            main_font = ImageFont.truetype(Roboto, size=12)
 
             opera = result.current_playing.item.show.name if result.current_playing.item.show is not None else result.current_playing.item.album.name
 
-            artist = result.current_playing.item.show.publisher if result.current_playing.item.show is not None else ",".join(
+            artist = result.current_playing.item.show.publisher if result.current_playing.item.show is not None else ", ".join(
                 [a.name for a in result.current_playing.item.artists])
 
             msg = f"""T: {result.current_playing.item.name}
 O: {opera}       
 A: {artist}"""
 
-            w, h = font.getsize_multiline(msg)
+            w, h = main_font.getsize_multiline(msg)
             w = 7 + (7 + album_image.width if image_found else 0)
             h = int((inky_display.HEIGHT - h) / 2)
 
             draw = ImageDraw.Draw(img)
 
-            draw.multiline_text((w, h), msg, inky_display.WHITE, font=font)
+            draw.multiline_text(
+                (w, h), msg, inky_display.WHITE, font=main_font)
+
+            secondary_font = ImageFont.truetype(Roboto, size=10)
 
             playing_on = f"D: {result.current_playing.device.name}"
 
-            w, h = font.getsize(playing_on)
-            x = int((inky_display.WIDTH - w - self._margin))
-            y = int(inky_display.HEIGHT - h - self._margin)
-            draw.text((x, y), playing_on, inky_display.WHITE, font=font)
+            w, h = secondary_font.getsize(playing_on)
+            x = int((inky_display.WIDTH - w - self._margin_w))
+            y = int(inky_display.HEIGHT - h - self._margin_h)
+            draw.text((x, y), playing_on, inky_display.WHITE,
+                      font=secondary_font)
+
+            playlist = result.playlist.name if result.playlist is not None else None
+
+            if playlist is not None:
+                w, h = secondary_font.getsize(playlist)
+                x = int(self._margin_w)
+                y = int(self._margin_h)
+                draw.text((x, y), f"P: {playlist}",
+                          inky_display.WHITE, font=secondary_font)
 
             inky_display.set_border(self._colour)
 
