@@ -9,15 +9,21 @@
 
 ## Environment
 
-This project is developed to run on a [Raspberry Pi](https://www.raspberrypi.org/ "Official Raspberry Pi website") with GPIO header and an [Inky pHAT](https://shop.pimoroni.com/products/inky-phat?variant=12549254217811 "Manufacturer's website"). The reference operating system of this document is [Raspberry Pi OS](https://www.raspberrypi.org/downloads/raspberry-pi-os/ "Download webpage").
+This project is developed to run on a [Raspberry Pi](https://www.raspberrypi.org/ "Official Raspberry Pi website") with GPIO header and an [Inky pHAT](https://shop.pimoroni.com/products/inky-phat?variant=12549254217811 "Manufacturer's website"). The reference operating system of this document is [Raspberry Pi OS](https://www.raspberrypi.org/downloads/raspberry-pi-os/ "Download webpage") Lite (without user interface).
 
 ### Prerequisites
 
-Install required packages with:
+#### Install some packages
 
 ``` bash
-sudo apt install python3 python3-pip python3-numpy libtiff5 libopenjp2-7
+sudo apt install python3 python3-pip python3-numpy libtiff5 libopenjp2-7 pigpiod
 ```
+
+#### Enable SPI kernel module
+
+You can enable it using `raspi-config` tool under Interfacing options.
+
+#### Create a Spotify API application
 
 You will need to create an API application with your Spotify account as explained in the [official Spotify documentation](https://developer.spotify.com/documentation/general/guides/app-settings/#register-your-app "Documentation on registering a Spotify application"). Take note of your ```Client ID```, ```Client Secret``` and whitelist one redirect URI of your choice. The redirect URI does not need to be remotely accessible.
 
