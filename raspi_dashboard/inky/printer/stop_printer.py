@@ -10,10 +10,13 @@ logger = logging.getLogger(__name__)
 class StopPrinter(PrinterBase):
     _message = "raspi\n\t\tdashboard"
 
-    def print_console(self):
-        logger.info(self._message)
+    def get_console_text(self):
+        logger.debug("get_console_text")
 
-    def print_display(self, inky_display):
+        return self._message
+
+    def get_display_img(self, inky_display):
+        logger.debug("get_display_img")
 
         scale_size = 1
 
@@ -34,5 +37,4 @@ class StopPrinter(PrinterBase):
         draw.multiline_text((x, y), self._message,
                             inky_display.WHITE, font=intuitive_font)
 
-        inky_display.set_image(img)
-        inky_display.show()
+        return img

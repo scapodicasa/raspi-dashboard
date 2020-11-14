@@ -11,11 +11,14 @@ logger = logging.getLogger(__name__)
 
 class ClockPrinter(PrinterBase):
 
-    def print_console(self):
-        now = time.strftime("%H:%M")
-        logger.info(now)
+    def get_console_text(self):
+        logger.debug("get_console_text")
 
-    def print_display(self, inky_display):
+        return time.strftime("%H:%M")
+
+    def get_display_img(self, inky_display):
+        logger.debug("get_display_img")
+
         now = time.strftime("%H:%M")
 
         scale_size = 1
@@ -36,5 +39,4 @@ class ClockPrinter(PrinterBase):
         name_y = int((inky_display.HEIGHT - name_h) / 2)
         draw.text((name_x, name_y), now, inky_display.WHITE, font=font)
 
-        inky_display.set_image(img)
-        inky_display.show()
+        return img

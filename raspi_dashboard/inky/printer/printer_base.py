@@ -1,4 +1,6 @@
+from PIL import Image
 from inky import InkyPHAT, InkyMockPHAT
+import threading
 
 from .. import DisplayMode
 from ...core.config import CONFIG
@@ -17,26 +19,41 @@ class PrinterBase:
         self._colour = CONFIG['INKY']['colour']
 
     def print(self):
-        self.print_console()
+        console_text = self.get_console_text()
+        logger.info(console_text)
 
         if self._display_mode == DisplayMode.NO:
             return
 
         inky_display = self._get_inky()
 
-        if self._display_mode == DisplayMode.MOCK:
-            self.print_display(inky_display)
+        if self._display_mode != DisplayMode.NO:
+            img = self.get_display_img(inky_display)
+            inky_display.set_image(img)
 
+        if self._display_mode == DisplayMode.MOCK:
             logger.info("Press Ctrl+C or close window to exit.")
+            inky_display.show()
             inky_display.wait_for_window_close()
         else:
-            self.print_display(inky_display)
+            threading.Thread(target=inky_display.show).start()
 
-    def print_console(self):
-        pass
+    def get_console_text(self):
+        logger.debug("get_console_text")
 
-    def print_display(self, inky_display):
-        pass
+        return ""
+
+    def get_display_img(self, inky_display):
+        logger.debug("get_display_img")
+
+        img = Image.new("P", (inky_display.WIDTH, inky_display.HEIGHT))
+
+        for y in range(0, inky_display.HEIGHT):
+            for x in range(0, inky_display.WIDTH):
+                color = inky_display.BLACK
+                img.putpixel((x, y), color)
+
+        return img
 
     def _get_inky(self):
         if self._display_mode == DisplayMode.NO:

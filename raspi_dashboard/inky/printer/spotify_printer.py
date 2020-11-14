@@ -21,10 +21,14 @@ class SpotifyPrinter(PrinterBase):
         super().__init__(display_mode)
         self._result = result
 
-    def print_console(self):
-        logger.info(self._result)
+    def get_console_text(self):
+        logger.debug("get_console_text")
 
-    def print_display(self, inky_display):
+        return str(self._result)
+
+    def get_display_img(self, inky_display):
+        logger.debug("get_display_img")
+
         result = self._result
 
         img = Image.new("P", (inky_display.WIDTH, inky_display.HEIGHT))
@@ -108,8 +112,7 @@ A: {artist}"""
 
             inky_display.set_border(self._colour)
 
-            inky_display.set_image(img)
-            inky_display.show()
+            return img
 
         except Exception as ex:
             logger.info("Unexpected exception happened.")
