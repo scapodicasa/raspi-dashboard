@@ -30,14 +30,14 @@ def initialize_config():
     args = parser.parse_args()
 
     inky_colour = args.inky_colour if args.inky_colour is not None else config['INKY'].get(
-        'colour', "")
+        'colour', "") if config.has_section('INKY') else ""
 
     spotify_client_id = args.spotify_client_id if args.spotify_client_id is not None else config['SPOTIFY'].get(
-        'client_id', "")
+        'client_id', "") if config.has_section('SPOTIFY') else ""
     spotify_client_secret = args.spotify_client_secret if args.spotify_client_secret is not None else config['SPOTIFY'].get(
-        'client_secret', "")
+        'client_secret', "") if config.has_section('SPOTIFY') else ""
     spotify_redirect_uri = args.spotify_redirect_uri if args.spotify_redirect_uri is not None else config['SPOTIFY'].get(
-        'redirect_uri', "")
+        'redirect_uri', "") if config.has_section('SPOTIFY') else ""
 
     _create_ini_file(inky_colour, spotify_client_id,
                      spotify_client_secret, spotify_redirect_uri)
