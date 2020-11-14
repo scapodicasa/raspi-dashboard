@@ -1,6 +1,5 @@
 from PIL import Image
 from inky import InkyPHAT, InkyMockPHAT
-import threading
 
 from .. import DisplayMode
 from ...core.config import CONFIG
@@ -36,7 +35,7 @@ class PrinterBase:
             inky_display.show()
             inky_display.wait_for_window_close()
         else:
-            threading.Thread(target=inky_display.show).start()
+            inky_display.show()
 
     def get_console_text(self):
         logger.debug("get_console_text")

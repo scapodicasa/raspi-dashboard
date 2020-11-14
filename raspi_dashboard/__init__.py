@@ -36,27 +36,26 @@ def main():
     for sig in (SIGABRT, SIGILL, SIGINT, SIGSEGV, SIGTERM):
         signal(sig, stop_print)
 
+    clock_printer = ClockPrinter(args.display)
+
+    clock = ClockService()
+    clock.register(ServiceBase.Events.ON_TRIGGER, clock_printer.print)
+
     spotify = initialize_spotify()
     if spotify is None:
         logger.error("Spotify not initializated. Exiting.")
         return
 
-    spotify.register(SpotifyService.Events.ON_STOP_PLAYING,
-                     lambda: clock.start())
+    spotify.register(SpotifyService.Events.ON_STOP_PLAYING, clock.start)
 
     def handle_spotify_start_playing(track):
-        SpotifyPrinter(args.display, track).print()
         clock.stop()
+        SpotifyPrinter(args.display, track).print()
 
     spotify.register(SpotifyService.Events.ON_START_PLAYING,
                      handle_spotify_start_playing)
     spotify.register(SpotifyService.Events.ON_TRACK_CHANGE,
                      lambda track: SpotifyPrinter(args.display, track).print())
-
-    clock_printer = ClockPrinter(args.display)
-    clock = ClockService()
-    clock.register(ServiceBase.Events.ON_TRIGGER,
-                   lambda: clock_printer.print())
 
     clock.start()
     spotify.start()
