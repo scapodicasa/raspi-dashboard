@@ -1,6 +1,5 @@
 from setuptools import setup
 
-# read the contents of your README file
 from os import path
 this_directory = path.abspath(path.dirname(__file__))
 with open(path.join(this_directory, 'README.md'), encoding='utf-8') as f:
@@ -29,13 +28,13 @@ setup(
         ]
     },
     zip_safe=True,
-    platforms='any',
     install_requires=list(val.strip() for val in open('requirements.txt')),
     classifiers=[
         'License :: OSI Approved :: MIT License',
         'Intended Audience :: End Users/Desktop',
         'Programming Language :: Python',
         'Programming Language :: Python :: 3',
+        'Operating System :: POSIX :: Linux',
         'Topic :: System :: Hardware'
     ]
 )
