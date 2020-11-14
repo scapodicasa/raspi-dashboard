@@ -27,10 +27,10 @@ class ServiceBase(Publisher):
         self._running = False
 
     def start(self):
-        logger.info("Starting")
+        logger.info(f"Starting {self.__class__.__name__}")
 
         if not self._scheduler.running:
-            logger.debug("Starting scheduler")
+            logger.debug(f"Starting {self.__class__.__name__} scheduler")
             self._scheduler.start()
 
         self._running = True
@@ -40,7 +40,7 @@ class ServiceBase(Publisher):
         return self._running
 
     def stop(self):
-        logger.info("Stopping")
+        logger.info(f"Stopping {self.__class__.__name__}")
         self._running = False
 
     def get_next_trigger(self):
@@ -48,18 +48,19 @@ class ServiceBase(Publisher):
 
     def _do(self):
         if self._running:
-            logger.info("Executing payload.")
+            logger.info(f"Executing {self.__class__.__name__} payload.")
 
             self.dispatch(ServiceBase.Events.ON_TRIGGER)
 
             if len(self._scheduler.get_jobs()) == 0:
-                logger.debug("Scheduling next iteration")
+                logger.debug(
+                    f"Scheduling {self.__class__.__name__} next iteration")
 
                 self._scheduler.add_job(
                     self._do, self.get_next_trigger(), misfire_grace_time=604800)
             else:
                 logger.debug(
-                    "Next iteration not scheduled because of some jobs are already scheduled")
+                    f"Next iteration not scheduled by {self.__class__.__name__} because of some jobs are already scheduled")
         else:
             logger.debug(
-                "Payload not executed because service is not running.")
+                f"Payload not executed by {self.__class__.__name__} because service is not running.")
