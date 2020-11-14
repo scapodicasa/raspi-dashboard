@@ -1,12 +1,14 @@
 from datetime import datetime, timedelta
 from enum import Enum
 
+import apscheduler
 from apscheduler.schedulers.asyncio import AsyncIOScheduler
 from apscheduler.triggers.date import DateTrigger
 
 from ..publisher import Publisher
 
 import logging
+logging.getLogger(apscheduler.__name__).setLevel(logging.WARNING)
 logger = logging.getLogger(__name__)
 
 

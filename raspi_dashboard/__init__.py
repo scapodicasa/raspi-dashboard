@@ -11,7 +11,7 @@ from .inky import DisplayMode
 from .inky.printer import ClockPrinter, SpotifyPrinter, StopPrinter
 
 import logging
-log_level = logging.INFO
+log_level = logging.DEBUG
 logging.basicConfig(
     level=log_level, format='[%(levelname)s] %(asctime)s [%(name)s]: %(message)s', datefmt='%d/%m/%Y %H:%M:%S')
 

@@ -13,6 +13,8 @@ from .. import ServiceBase
 from .model import SpotifyUser, SpotifyCurrentPlaying, SpotifyPlaylist, SpotifyPlayingInfo
 
 import logging
+logging.getLogger(spotipy.__name__).setLevel(logging.WARNING)
+
 logger = logging.getLogger(__name__)
 
 
