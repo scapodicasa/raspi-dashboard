@@ -6,3 +6,4 @@ pillow
 inky[rpi]
 font-roboto
 font-intuitive
+font-font-awesome

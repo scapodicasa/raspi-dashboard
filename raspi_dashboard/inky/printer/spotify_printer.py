@@ -5,6 +5,7 @@ import numpy as np
 from PIL import Image, ImageFont, ImageDraw
 
 from font_roboto import Roboto
+from font_font_awesome import FontAwesome5Brands
 
 from .printer_base import PrinterBase
 
@@ -123,6 +124,13 @@ A: {artist}"""
                 y = int(self._margin_h)
                 draw.text((x, y), f"P: {playlist}",
                           inky_display.WHITE, font=secondary_font)
+
+            icons = ImageFont.truetype(FontAwesome5Brands, size=20)
+            text = chr(0xf1bc)
+            w, h = icons.getsize(text)
+            x = int((inky_display.WIDTH - w - self._margin_w))
+            y = int(self._margin_h)
+            draw.text((x, y), text, inky_display.WHITE, font=icons)
 
             inky_display.set_border(self._colour)
 
