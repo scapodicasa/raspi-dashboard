@@ -10,11 +10,15 @@ logger = logging.getLogger(__name__)
 
 class PrinterBase:
     _display_mode = None
+    _flip = None
+
     _colour = None
 
     def __init__(self, display_mode):
         self._display_mode = DisplayMode(
             display_mode) if display_mode is not None else None
+
+        self._flip = CONFIG['INKY']['flip']
         self._colour = CONFIG['INKY']['colour']
 
     def print(self):
@@ -28,6 +32,10 @@ class PrinterBase:
 
         if self._display_mode != DisplayMode.NO:
             img = self.get_display_img(inky_display)
+
+            if self._flip:
+                img = img.rotate(180)
+
             inky_display.set_image(img)
 
         if self._display_mode == DisplayMode.MOCK:

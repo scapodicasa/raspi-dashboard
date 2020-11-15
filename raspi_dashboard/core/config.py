@@ -20,6 +20,12 @@ def initialize_config():
     parser.add_argument("--inky_colour", type=str,
                         choices=["red", "black", "yellow"], help="Your Inky colour")
 
+    parser.add_argument('--flip', dest='flip', action='store_true',
+                        help="Flip image to use Raspberry Pi Zero with power port on the top side.")
+    parser.add_argument('--no-flip', dest='flip', action='store_false',
+                        help="Do not flip image to use Raspberry Pi Zero with power port on the bottom side.")
+    parser.set_defaults(flip=None)
+
     parser.add_argument("--spotify_client_id", type=str,
                         help="Your Spotify application Client Id")
     parser.add_argument("--spotify_client_secret", type=str,
@@ -32,6 +38,9 @@ def initialize_config():
     inky_colour = args.inky_colour if args.inky_colour is not None else config['INKY'].get(
         'colour', "") if config.has_section('INKY') else ""
 
+    flip = args.flip if args.flip is not None else config['INKY'].get(
+        'flip', "") if config.has_section('INKY') else False
+
     spotify_client_id = args.spotify_client_id if args.spotify_client_id is not None else config['SPOTIFY'].get(
         'client_id', "") if config.has_section('SPOTIFY') else ""
     spotify_client_secret = args.spotify_client_secret if args.spotify_client_secret is not None else config['SPOTIFY'].get(
@@ -39,16 +48,17 @@ def initialize_config():
     spotify_redirect_uri = args.spotify_redirect_uri if args.spotify_redirect_uri is not None else config['SPOTIFY'].get(
         'redirect_uri', "") if config.has_section('SPOTIFY') else ""
 
-    _create_ini_file(inky_colour, spotify_client_id,
+    _create_ini_file(inky_colour, flip, spotify_client_id,
                      spotify_client_secret, spotify_redirect_uri)
 
     if not os.path.exists(LOCAL_DATA_DIR):
         os.makedirs(LOCAL_DATA_DIR)
 
 
-def _create_ini_file(inky_colour, spotify_client_id, spotify_client_secret, spotify_redirect_uri):
+def _create_ini_file(inky_colour, flip, spotify_client_id, spotify_client_secret, spotify_redirect_uri):
     config['INKY'] = {
-        'colour': inky_colour
+        'colour': inky_colour,
+        'flip': flip,
     }
 
     config['SPOTIFY'] = {
