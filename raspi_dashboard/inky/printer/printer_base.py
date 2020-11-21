@@ -1,3 +1,5 @@
+from threading import Thread, Lock
+
 from PIL import Image
 from inky import InkyPHAT, InkyMockPHAT
 
@@ -13,6 +15,8 @@ class PrinterBase:
     _flip = None
 
     _colour = None
+
+    _lock = Lock()
 
     def __init__(self, display_mode):
         self._display_mode = DisplayMode(
@@ -43,7 +47,11 @@ class PrinterBase:
             inky_display.show()
             inky_display.wait_for_window_close()
         else:
-            inky_display.show()
+            def show():
+                with self._lock:
+                    inky_display.show()
+
+            Thread(target=show).start()
 
     def get_console_text(self):
         logger.debug("get_console_text")
