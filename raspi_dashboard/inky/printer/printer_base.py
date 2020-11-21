@@ -18,7 +18,7 @@ class PrinterBase:
         self._display_mode = DisplayMode(
             display_mode) if display_mode is not None else None
 
-        self._flip = CONFIG['INKY']['flip']
+        self._flip = CONFIG.getboolean("INKY", "flip")
         self._colour = CONFIG['INKY']['colour']
 
     def print(self):
