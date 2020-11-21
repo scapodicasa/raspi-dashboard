@@ -41,24 +41,30 @@ class SpotifyPrinter(PrinterBase):
             image_found = False
 
             if len(album_images) > 0:
-                image_found = True
                 album_image = album_images[0]
 
                 try:
                     response = requests.get(album_image.url)
 
                     if response.status_code == 200:
-                        cover = Image.open(BytesIO(response.content))
-                        cover.convert("1")
-                        cover = np.asarray(cover)
+                        try:
+                            cover = Image.open(BytesIO(response.content))
+                            cover.convert("1")
+                            cover = np.asarray(cover)
 
-                        bw = []
+                            bw = []
 
-                        for x in cover:
-                            row = []
-                            bw.append(row)
-                            for y in x:
-                                row.append(sum(y) / len(y))
+                            for x in cover:
+                                row = []
+                                bw.append(row)
+                                for y in x:
+                                    row.append(sum(y) / len(y))
+
+                            image_found = True
+                        except Exception as ex:
+                            logger.info("Error opening remote image.")
+                            logger.debug(ex)
+
                     else:
                         logger.info(
                             f"Error downloading image from: {album_image.url}.")
