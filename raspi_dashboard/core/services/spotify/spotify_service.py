@@ -83,10 +83,15 @@ class SpotifyService(ServiceBase):
             if current_playing.is_playing:
                 playlist = None
                 if current_playing.context is not None and current_playing.context.type == 'playlist':
-                    pl = self.spotify.playlist(
-                        current_playing.context.type_id, fields='id,uri,name,description')
-                    playlist = SpotifyPlaylist(**pl)
-                    logger.debug(f"Playlist: {playlist}")
+                    try:
+                        pl = self.spotify.playlist(
+                            current_playing.context.type_id, fields='id,uri,name,description')
+                        playlist = SpotifyPlaylist(**pl)
+                        logger.debug(f"Playlist: {playlist}")
+                    except Exception as ex:
+                        logger.info("Spotify playlist call failed.")
+                        logger.debug(ex)
+                        playlist = SpotifyPlaylist(name="Unknown")
                 else:
                     logger.debug("Context is not playlist.")
 
