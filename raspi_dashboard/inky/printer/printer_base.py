@@ -34,6 +34,14 @@ class PrinterBase:
 
         inky_display = self._get_inky()
 
+        border_colour = inky_display.BLACK
+        if self._colour == 'red':
+            border_colour = inky_display.RED
+        elif self._colour == 'yellow':
+            border_colour = inky_display.YELLOW
+
+        inky_display.set_border(border_colour)
+
         if self._display_mode != DisplayMode.NO:
             img = self.get_display_img(inky_display)
 
@@ -54,21 +62,10 @@ class PrinterBase:
             Thread(target=show).start()
 
     def get_console_text(self):
-        logger.debug("get_console_text")
-
         return ""
 
     def get_display_img(self, inky_display):
-        logger.debug("get_display_img")
-
-        img = Image.new("P", (inky_display.WIDTH, inky_display.HEIGHT))
-
-        for y in range(0, inky_display.HEIGHT):
-            for x in range(0, inky_display.WIDTH):
-                color = inky_display.BLACK
-                img.putpixel((x, y), color)
-
-        return img
+        return Image.new("P", (inky_display.WIDTH, inky_display.HEIGHT), inky_display.BLACK)
 
     def _get_inky(self):
         if self._display_mode == DisplayMode.NO:

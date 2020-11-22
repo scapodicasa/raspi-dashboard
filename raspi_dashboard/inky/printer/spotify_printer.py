@@ -24,13 +24,9 @@ class SpotifyPrinter(PrinterBase):
         self._result = result
 
     def get_console_text(self):
-        logger.debug("get_console_text")
-
         return str(self._result)
 
     def get_display_img(self, inky_display):
-        logger.debug("get_display_img")
-
         result = self._result
 
         img = Image.new("P", (inky_display.WIDTH, inky_display.HEIGHT))
@@ -137,8 +133,6 @@ A: {artist}"""
             x = int((inky_display.WIDTH - w - self._margin_w))
             y = int(self._margin_h)
             draw.text((x, y), text, inky_display.WHITE, font=icons)
-
-            inky_display.set_border(self._colour)
 
             return img
 
