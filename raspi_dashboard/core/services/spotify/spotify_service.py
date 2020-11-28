@@ -81,22 +81,27 @@ class SpotifyService(ServiceBase):
             logger.debug(f"Current: {current_playing}")
 
             if current_playing.is_playing:
-                playlist = None
-                if current_playing.context is not None and current_playing.context.type == 'playlist':
-                    try:
-                        pl = self.spotify.playlist(
-                            current_playing.context.type_id, fields='id,uri,name,description')
-                        playlist = SpotifyPlaylist(**pl)
-                        logger.debug(f"Playlist: {playlist}")
-                    except Exception as ex:
-                        logger.info("Spotify playlist call failed.")
-                        logger.debug(ex)
-                        playlist = SpotifyPlaylist(name="Unknown")
-                else:
-                    logger.debug("Context is not playlist.")
+                if current_playing.item is not None:
+                    playlist = None
+                    if current_playing.context is not None and current_playing.context.type == 'playlist':
+                        try:
+                            pl = self.spotify.playlist(
+                                current_playing.context.type_id, fields='id,uri,name,description')
+                            playlist = SpotifyPlaylist(**pl)
+                            logger.debug(f"Playlist: {playlist}")
+                        except Exception as ex:
+                            logger.info("Spotify playlist call failed.")
+                            logger.debug(ex)
+                            playlist = SpotifyPlaylist(name="Unknown")
+                    else:
+                        logger.debug("Context is not playlist.")
 
-                new_playing = SpotifyPlayingInfo(
-                    current_playing=current_playing, playlist=playlist)
+                    new_playing = SpotifyPlayingInfo(
+                        current_playing=current_playing, playlist=playlist)
+
+                else:
+                    logger.debug(
+                        "Got playing info from Spotify, but playing item was not provided.")
 
             else:
                 logger.debug(
