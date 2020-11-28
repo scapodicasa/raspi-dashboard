@@ -1,7 +1,9 @@
 from threading import Thread, Lock
 
-from PIL import Image
+from PIL import Image, ImageFont, ImageDraw
 from inky import InkyPHAT, InkyMockPHAT
+
+from font_intuitive import Intuitive
 
 from .. import DisplayMode
 from ...core.config import CONFIG
@@ -17,6 +19,8 @@ class PrinterBase:
     _colour = None
 
     _lock = Lock()
+
+    _default_message = "raspi\n\t\tdashboard"
 
     def __init__(self, display_mode):
         self._display_mode = DisplayMode(
@@ -45,6 +49,11 @@ class PrinterBase:
         if self._display_mode != DisplayMode.NO:
             img = self.get_display_img(inky_display)
 
+            if img is None:
+                img = PrinterBase.get_default_image(inky_display)
+                logger.warning(
+                    "Image not correctly created. Showing default image.")
+
             if self._flip:
                 img = img.rotate(180)
 
@@ -62,10 +71,28 @@ class PrinterBase:
             Thread(target=show).start()
 
     def get_console_text(self):
-        return ""
+        return self._default_message
 
     def get_display_img(self, inky_display):
-        return Image.new("P", (inky_display.WIDTH, inky_display.HEIGHT), inky_display.BLACK)
+        return PrinterBase.get_default_image(inky_display)
+
+    @classmethod
+    def get_default_image(self, inky_display):
+        scale_size = 1
+
+        img = Image.new(
+            "P", (inky_display.WIDTH, inky_display.HEIGHT), inky_display.BLACK)
+        draw = ImageDraw.Draw(img)
+
+        intuitive_font = ImageFont.truetype(Intuitive, int(45 * scale_size))
+
+        w, h = intuitive_font.getsize_multiline(self._default_message)
+        x = int((inky_display.WIDTH - w) / 2)
+        y = int((inky_display.HEIGHT - h) / 2)
+        draw.multiline_text((x, y), self._default_message,
+                            inky_display.WHITE, font=intuitive_font)
+
+        return img
 
     def _get_inky(self):
         if self._display_mode == DisplayMode.NO:
